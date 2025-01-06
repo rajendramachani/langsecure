@@ -1,1 +1,2 @@
-llama-index==0.11.19
+llama-index
+llama-index-utils-workflow

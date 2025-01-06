@@ -8,7 +8,6 @@ from nemoguardrails.llm.prompts import Task
 from nemoguardrails.llm.taskmanager import LLMTaskManager
 from nemoguardrails.rails.llm.config import RailsConfig
 from nemoguardrails.rails.llm.config import Model
-from nemoguardrails.rails.llm.config import Instruction
 from nemoguardrails.rails.llm.config import TaskPrompt
 from nemoguardrails.rails.llm.config import Rails, InputRails
 from nemoguardrails.actions import action
