@@ -1,3 +1,4 @@
+import asyncio
 from pydantic import BaseModel, HttpUrl
 from pathlib import Path
 from typing import Union
@@ -41,7 +42,13 @@ class Langsecure(BaseModel):
 
     def shield(self, runnable: Any):
         try:
-            fqcn = f"{runnable.__class__.__module__}.{runnable.__class__.__qualname__}"
+            # A runnable can be a sub-class made from a base-class.
+            # Use base-class if exists for the implementor.
+            bases = runnable.__class__.__bases__
+            if bases:
+                fqcn = f"{bases[0].__module__}.{bases[0].__qualname__}"
+            else:
+                fqcn = f"{runnable.__class__.__module__}.{runnable.__class__.__qualname__}"
             implementor = factory.get(fqcn)
             if implementor != None:
                 return implementor(**self.__dict__).shield(runnable)
@@ -51,14 +58,20 @@ class Langsecure(BaseModel):
             print(f"An error of type {type(e).__name__} occurred: {e}")
             raise e
 
-    def _input_enforcer(self, prompt) -> (bool, str):
-        return self._enforcer(scope=['user_input'], prompt=prompt)
+    async def _input_enforcer(self, prompt) -> (bool, str):
+        ret = self._enforcer(scope=['user_input'], prompt=prompt)
+        if asyncio.iscoroutine(ret):
+            ret = await ret
+        return ret
 
-    def _output_enforcer(self, prompt, answer,context=None) -> (bool, str):
-        return self._enforcer(scope=['context', 'bot_answer'], prompt=prompt, answer=answer, context=context)
-        
+    async def _output_enforcer(self, prompt, answer, context=None) -> (bool, str):
+        ret = self._enforcer(scope=['context', 'bot_answer'], prompt=prompt, answer=answer, context=context)
+        if asyncio.iscoroutine(ret):
+            ret = await ret
+        return ret
+
     @utils.execute_remotely_if_needed
-    def _enforcer(self, scope=['user_input'], prompt=None, answer=None, context=None) -> (bool, str):
+    async def _enforcer(self, scope=['user_input'], prompt=None, answer=None, context=None) -> (bool, str):
         parallel_rails = []
         for policy in self._py_policystore.policies:
             for filter in policy.filters:
@@ -68,8 +81,10 @@ class Langsecure(BaseModel):
                 #log if there is no implementor found for a filter
                 if fn != None:
                     parallel_rails.append(fn)
+                else:
                     #raise ValueError(f"No implementor found for filter {filter.id}")
-        results = rails.ParallelRails().trigger(rails=parallel_rails, rules=filter.rules, prompt=prompt, engine=self.llm_engine, trace=self._trace, model=self.llm_model)
+                    pass
+        results = await rails.ParallelRails().trigger(rails=parallel_rails, rules=filter.rules, prompt=prompt, engine=self.llm_engine, trace=self._trace, model=self.llm_model)
 
         for result in results:
             if result.decision == 'deny':

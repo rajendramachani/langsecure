@@ -1,6 +1,8 @@
+import asyncio
 import requests
 from flask import request, jsonify
 from functools import wraps
+
 
 def execute_remotely_if_needed(func):
     """Decorator that checks if remote execution is needed based on langsecure_server."""
@@ -19,6 +21,10 @@ def execute_remotely_if_needed(func):
         else:
             # Local execution
             print(f"Executing {func.__name__} locally with args: {args}, kwargs: {kwargs}")
+            # in case of the decorated function called from the api route,
+            # the instance is already passed in args.
+            if instance in args:
+                return func(*args, **kwargs)
             return func(instance, *args, **kwargs)
 
     return wrapper
@@ -26,7 +32,7 @@ def execute_remotely_if_needed(func):
 
 def apiroute(app, func, instance=None):
     @wraps(func)
-    def wrapped(*args, **kwargs):
+    async def wrapped(*args, **kwargs):
         # Unpack request data
         data = request.get_json()
         args = data.get('args', [])
@@ -36,6 +42,8 @@ def apiroute(app, func, instance=None):
             result = func(instance, *args, **kwargs)
         else:
             result = func(*args, **kwargs)
+        if asyncio.iscoroutine(result):
+            result = await result
         return jsonify(result)  # Convert the result to JSON response
 
     # Register the wrapped function as a Flask route
