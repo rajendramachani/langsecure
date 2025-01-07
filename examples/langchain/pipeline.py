@@ -12,8 +12,8 @@ from langchain_openai import ChatOpenAI
 
 llm = ChatOpenAI(model="gpt-4o-mini")
 embedding = OpenAIEmbeddings()
-#llm = OllamaLLM(model="phi3.5")
-#embedding = OllamaEmbeddings(model="nomic-embed-text:latest")
+# llm = OllamaLLM(model="phi3.5")
+# embedding = OllamaEmbeddings(model="nomic-embed-text:latest")
 
 file_path = "../data/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf"
 loader = PyPDFLoader(file_path)
@@ -31,8 +31,10 @@ prompt = hub.pull("rlm/rag-prompt")
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
+
 from langsecure import Langsecure
 from langsecure.langchain import RunnableLangsecure
+
 langsecure = RunnableLangsecure(Langsecure(policy_store="default"))
 
 rag_chain = (

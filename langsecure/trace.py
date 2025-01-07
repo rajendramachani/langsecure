@@ -10,7 +10,8 @@ from langfuse import Langfuse
 import json
 
 trace.set_tracer_provider(TracerProvider())
-processed_spans = {} # to avoid duplicate spans during export because of threading?
+processed_spans = {}  # to avoid duplicate spans during export because of threading?
+
 
 class FileSpanExporter(SpanExporter):
     def __init__(
