@@ -24,12 +24,14 @@ response = chat_engine.chat(prompt)
 """
 
 
-from llama_index.core import (
-    VectorStoreIndex,
-    ServiceContext,
-    SimpleDirectoryReader,
-    load_index_from_storage,
-)
+# from llama_index.core import (
+#     VectorStoreIndex,
+#     ServiceContext,
+#     SimpleDirectoryReader,
+#     load_index_from_storage,
+# )
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+
 
 reader = SimpleDirectoryReader("../data")
 docs = reader.load_data()
@@ -40,7 +42,7 @@ index = VectorStoreIndex.from_documents(docs)
 
 from llama_index.core.response_synthesizers import TreeSummarize
 from llama_index.core.query_pipeline import InputComponent, QueryPipeline
-from llama_index.llms.openai import OpenAI
+#from llama_index.llms.openai import OpenAI
 
 
 retriever = index.as_retriever(similarity_top_k=5)
@@ -72,7 +74,7 @@ def input_guardrails(query) -> bool:
     }])
     """
 
-    response = rails.generate(messages=[{"role": "user", "content": query}])
+    _ = rails.generate(messages=[{"role": "user", "content": query}])
 
     info = rails.explain()
     tasks = info.dict()["llm_calls"]
@@ -100,7 +102,7 @@ def output_guardrails(query, context, answer):
     config = RailsConfig.from_path("./config_output")
     rails = LLMRails(config)
 
-    response = rails.generate(
+    _ = rails.generate(
         messages=[
             {"role": "user", "content": query},
             {"role": "context", "content": {"relevant_chunks": context}},

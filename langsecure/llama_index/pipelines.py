@@ -1,14 +1,14 @@
 """Arg pack components."""
 
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Dict
+#from typing import Callable, Optional
 
 from llama_index.core.base.query_pipeline.query import (
     InputKeys,
     OutputKeys,
     QueryComponent,
 )
-from llama_index.core.bridge.pydantic import Field
-
+#from llama_index.core.bridge.pydantic import Field
 
 class StopComponent(QueryComponent):
     """Stop  component.
@@ -31,7 +31,7 @@ class StopComponent(QueryComponent):
         """Validate component outputs."""
         # make sure output value is a list
         if not isinstance(output["output"], str):
-            raise ValueError(f"Output is not a string.")
+            raise ValueError("Output is not a string.")
         return output
 
     def set_callback_manager(self, callback_manager: Any) -> None:

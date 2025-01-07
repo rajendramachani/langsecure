@@ -101,7 +101,9 @@ class Langsecure(BaseModel):
         if app != None:
             utils.apiroute(app, self._enforcer)
         else:
-            from flask import Flask, request, jsonify
+            from flask import Flask
+            #from flask import request, jsonify
+
 
             app = Flask("langsecure")
 

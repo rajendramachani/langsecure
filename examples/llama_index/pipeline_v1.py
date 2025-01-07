@@ -24,12 +24,13 @@ response = chat_engine.chat(prompt)
 """
 
 
-from llama_index.core import (
-    VectorStoreIndex,
-    ServiceContext,
-    SimpleDirectoryReader,
-    load_index_from_storage,
-)
+# from llama_index.core import (
+#     VectorStoreIndex,
+#     ServiceContext,
+#     SimpleDirectoryReader,
+#     load_index_from_storage,
+# )
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 
 reader = SimpleDirectoryReader("../data")
 docs = reader.load_data()
@@ -40,7 +41,7 @@ index = VectorStoreIndex.from_documents(docs)
 
 from llama_index.core.response_synthesizers import TreeSummarize
 from llama_index.core.query_pipeline import InputComponent, QueryPipeline
-from llama_index.llms.openai import OpenAI
+#from llama_index.llms.openai import OpenAI
 
 
 retriever = index.as_retriever(similarity_top_k=5)
@@ -137,7 +138,7 @@ class LangSecure(BaseModel):
 
         if self.policy_store == None:
             raise ValueError(
-                f"policy_store must be initialized to a local dir or to a remote server."
+                "policy_store must be initialized to a local dir or to a remote server."
             )
 
         if isinstance(self.policy_store, Path):
@@ -145,7 +146,7 @@ class LangSecure(BaseModel):
             pass
         else:
             raise ValueError(
-                f"policy_store with local directory is only supported. Future versions will support remote store as well."
+                "policy_store with local directory is only supported. Future versions will support remote store as well."
             )
 
         # hardcode rails backend to be nvidia nemoguardrails for now.
@@ -170,14 +171,16 @@ class LangSecure(BaseModel):
 
 """Arg pack components."""
 
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Dict, Optional
+#from typing import Any, Callable, Dict, Optional
+
 
 from llama_index.core.base.query_pipeline.query import (
     InputKeys,
     OutputKeys,
     QueryComponent,
 )
-from llama_index.core.bridge.pydantic import Field
+#from llama_index.core.bridge.pydantic import Field
 
 
 class StopComponent(QueryComponent):
@@ -201,7 +204,7 @@ class StopComponent(QueryComponent):
         """Validate component outputs."""
         # make sure output value is a list
         if not isinstance(output["output"], str):
-            raise ValueError(f"Output is not a string.")
+            raise ValueError("Output is not a string.")
         return output
 
     def set_callback_manager(self, callback_manager: Any) -> None:
