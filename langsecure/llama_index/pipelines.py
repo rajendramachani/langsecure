@@ -1,14 +1,21 @@
 """Arg pack components."""
 
 from typing import Any, Dict
-#from typing import Callable, Optional
+
+# from typing import Callable, Optional
 
 from llama_index.core.base.query_pipeline.query import (
     InputKeys,
     OutputKeys,
     QueryComponent,
 )
-#from llama_index.core.bridge.pydantic import Field
+
+# from llama_index.core.bridge.pydantic import Field
+
+import inspect
+from langsecure.factory import implements
+from langsecure import Langsecure
+
 
 class StopComponent(QueryComponent):
     """Stop  component.
@@ -19,15 +26,21 @@ class StopComponent(QueryComponent):
 
     message: str = "Pipeline execution terminated."
 
-    def _validate_component_inputs(self, input: Dict[str, Any]) -> Dict[str, Any]:
+    def _validate_component_inputs(
+        self, input: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate component inputs during run_component."""
         raise NotImplementedError
 
-    def validate_component_inputs(self, input: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_component_inputs(
+        self, input: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate component inputs."""
         return input
 
-    def _validate_component_outputs(self, output: Dict[str, Any]) -> Dict[str, Any]:
+    def _validate_component_outputs(
+        self, output: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate component outputs."""
         # make sure output value is a list
         if not isinstance(output["output"], str):
@@ -57,21 +70,20 @@ class StopComponent(QueryComponent):
         return OutputKeys.from_keys({"output"})
 
 
-import inspect
-from langsecure.factory import implements
-from langsecure import Langsecure
-
-
 @implements("llama_index.core.query_pipeline.query.QueryPipeline")
 class LI_QueryPipeline(Langsecure):
     def shield(self, runnable: Any) -> Any:
         self._parent = runnable
         self._parent_callables = {
             name: func
-            for name, func in inspect.getmembers(runnable, predicate=inspect.ismethod)
+            for name, func in inspect.getmembers(
+                runnable, predicate=inspect.ismethod
+            )
         }
 
-        self._parent.__class__.get_next_module_keys = self._get_next_module_keys
+        self._parent.__class__.get_next_module_keys = (
+            self._get_next_module_keys
+        )
         return self._parent
 
     def _get_next_module_keys(self, run_state):
@@ -84,18 +96,29 @@ class LI_QueryPipeline(Langsecure):
         next_stages = parent_callable(run_state)
         for stage in next_stages:
             if stage == "input":
-                for module_key, module_input in run_state.all_module_inputs.items():
+                for (
+                    module_key,
+                    module_input,
+                ) in run_state.all_module_inputs.items():
                     if module_key == stage:
                         for value in module_input.values():
                             deny, deny_message = self._input_enforcer(value)
-                            if deny == True:
-                                stop_component = StopComponent(message=deny_message)
-                                # Execute a stop stage and return back to the caller
-                                run_state.all_module_inputs["stop_component"] = {
-                                    "message": deny_message
-                                }
-                                if "stop_component" not in run_state.module_dict.keys():
-                                    self._parent.add("stop_component", stop_component)
+                            if deny is True:
+                                stop_component = StopComponent(
+                                    message=deny_message
+                                )
+                                # Execute a stop stage and
+                                # return back to the caller
+                                run_state.all_module_inputs[
+                                    "stop_component"
+                                ] = {"message": deny_message}
+                                if (
+                                    "stop_component"
+                                    not in run_state.module_dict.keys()
+                                ):
+                                    self._parent.add(
+                                        "stop_component", stop_component
+                                    )
                                 return ["stop_component"]
             if stage == "stop_component":
                 # post stop component, just return empty list

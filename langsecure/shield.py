@@ -20,7 +20,9 @@ class Langsecure(BaseModel):
     tracking_server: Optional[Union[Path, HttpUrl]] = Path(
         "~/.langsecure/trace.log"
     ).expanduser()
-    rails_backend: Optional[Literal["nvidia-nemoguardrails"]] = "nvidia-nemoguardrails"
+    rails_backend: Optional[Literal["nvidia-nemoguardrails"]] = (
+        "nvidia-nemoguardrails"
+    )
     langsecure_server: Optional[HttpUrl] = None
     llm_engine: Optional[str] = "openai"
     llm_model: Optional[str] = "gpt-3.5-turbo-instruct"
@@ -32,7 +34,7 @@ class Langsecure(BaseModel):
         # hardcode rails backend to be nvidia nemoguardrails for now.
         self.rails_backend = "nvidia-nemoguardrails"
 
-        if self.langsecure_server != None:
+        if self.langsecure_server is not None:
             # no need of loading policies locally
             self._py_policystore = None
         else:
@@ -44,9 +46,12 @@ class Langsecure(BaseModel):
 
     def shield(self, runnable: Any):
         try:
-            fqcn = f"{runnable.__class__.__module__}.{runnable.__class__.__qualname__}"
+            fqcn = (
+                f"{runnable.__class__.__module__}."
+                f"{runnable.__class__.__qualname__}"
+            )
             implementor = factory.get(fqcn)
-            if implementor != None:
+            if implementor is not None:
                 return implementor(**self.__dict__).shield(runnable)
             else:
                 return runnable
@@ -72,13 +77,14 @@ class Langsecure(BaseModel):
         parallel_rails = []
         for policy in self._py_policystore.policies:
             for filter in policy.filters:
-                if all(item in filter.scope for item in scope) == False:
+                if all(item in filter.scope for item in scope) is False:
                     continue
                 fn = factory.get(filter.id)
                 # log if there is no implementor found for a filter
-                if fn != None:
+                if fn is not None:
                     parallel_rails.append(fn)
-                    # raise ValueError(f"No implementor found for filter {filter.id}")
+                    # raise ValueError(f"No implementor
+                    # found for filter {filter.id}")
         results = rails.ParallelRails().trigger(
             rails=parallel_rails,
             rules=filter.rules,
@@ -91,19 +97,20 @@ class Langsecure(BaseModel):
         for result in results:
             if result.decision == "deny":
                 print(
-                    f"Policy {result.policy_id} check failed, message = {result.message}"
+                    f"Policy {result.policy_id} check failed,"
+                    f" message = {result.message}"
                 )
                 return True, result.message
 
         return False, ""
 
     def server(self, app=None):
-        if app != None:
+        if app is not None:
             utils.apiroute(app, self._enforcer)
         else:
             from flask import Flask
-            #from flask import request, jsonify
 
+            # from flask import request, jsonify
 
             app = Flask("langsecure")
 

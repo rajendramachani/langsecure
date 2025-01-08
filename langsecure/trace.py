@@ -10,7 +10,9 @@ from langfuse import Langfuse
 import json
 
 trace.set_tracer_provider(TracerProvider())
-processed_spans = {}  # to avoid duplicate spans during export because of threading?
+processed_spans = (
+    {}
+)  # to avoid duplicate spans during export because of threading?
 
 
 class FileSpanExporter(SpanExporter):
@@ -18,7 +20,9 @@ class FileSpanExporter(SpanExporter):
         self,
         file_path: str | Path | IO,
     ) -> None:
-        self.file_path = Path(file_path) if isinstance(file_path, str) else file_path
+        self.file_path = (
+            Path(file_path) if isinstance(file_path, str) else file_path
+        )
         self._lock = threading.Lock()
         self._file: IO | None = None
 
@@ -35,7 +39,8 @@ class FileSpanExporter(SpanExporter):
                     continue
                 event = json.loads(span.to_json(indent=None))
                 self._file.write(
-                    f'{event["start_time"]} {event["name"]} {event["events"][0]["attributes"]["output"]}\n'
+                    f'{event["start_time"]} {event["name"]}'
+                    f'{event["events"][0]["attributes"]["output"]}\n'
                 )
                 processed_spans[span.context.span_id] = True
             self._file.flush()
@@ -61,7 +66,9 @@ class LangsecureSpan:
         self.parent_ctx = parent_ctx
 
     def event(self, name, output=[], **kwargs):
-        with self.tracer.start_span(self.name, context=self.parent_ctx) as span:
+        with self.tracer.start_span(
+            self.name, context=self.parent_ctx
+        ) as span:
             span.add_event(name, attributes={"output": output})
 
     def span(self, name):
@@ -71,7 +78,9 @@ class LangsecureSpan:
 class LangsecureTrace:
     def __init__(self, name) -> None:
         self.tracer = trace.get_tracer(name)
-        self.root_context = trace.set_span_in_context(self.tracer.start_span(name))
+        self.root_context = trace.set_span_in_context(
+            self.tracer.start_span(name)
+        )
 
     def span(self, name):
         return LangsecureSpan(self.tracer, self.root_context, name)

@@ -1,5 +1,6 @@
 from .types import PyPolicy, PyFilter
-#from .types import PySubjects
+
+# from .types import PySubjects
 
 
 from pathlib import Path
@@ -22,7 +23,7 @@ class PyPolicyStore(BaseModel):
     def __init__(self, policy_store=None):
         super().__init__(policy_store=policy_store)
 
-        if self.policy_store == None or self.policy_store == "default":
+        if self.policy_store is None or self.policy_store == "default":
             # load from the package
             self._load_frompkg("langsecure")
 
@@ -34,7 +35,8 @@ class PyPolicyStore(BaseModel):
             # load from the given URL
             # URLs can be git or any cloud bucket URLs
             raise NotImplementedError(
-                "support for loading policies from a remote store is not implemented."
+                "support for loading policies from a"
+                "remote store is not implemented."
             )
 
     def _load_frompkg(self, package):
