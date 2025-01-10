@@ -28,4 +28,4 @@ jobs:
         run: pip install black flake8 pre-commit
 
       - name: Run linters
-	run: pre-commit install && git ls-files | xargs pre-commit run --show-diff-on-failure --files
+        run: pre-commit install && git ls-files | xargs pre-commit run --files
