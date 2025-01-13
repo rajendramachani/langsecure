@@ -19,8 +19,9 @@ class FileSpanExporter(SpanExporter):
         self,
         file_path: str | Path | IO,
     ) -> None:
-        self.file_path = Path(file_path) \
-            if isinstance(file_path, str) else file_path
+        self.file_path = (
+            Path(file_path) if isinstance(file_path, str) else file_path
+        )
         self._lock = threading.Lock()
         self._file: IO | None = None
 
@@ -65,7 +66,8 @@ class LangsecureSpan:
 
     def event(self, name, output=[], **kwargs):
         with self.tracer.start_span(
-                self.name, context=self.parent_ctx) as span:
+            self.name, context=self.parent_ctx
+        ) as span:
             span.add_event(name, attributes={"output": output})
 
     def span(self, name):

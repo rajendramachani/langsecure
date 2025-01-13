@@ -202,15 +202,15 @@ async def input_check_blocked_terms(context: Optional[dict] = None):
 
 @implements("proprietary_terms")
 def secure_input_proprietary_terms(
-        prompt, rules=None, engine="openai", model="gpt-3.5-turbo-instruct"
+    prompt, rules=None, engine="openai", model="gpt-3.5-turbo-instruct"
 ) -> Result:
     rails_config = RailsConfig.from_content(
         colang_content=PROPRIETARY_TERMS_CO
     )
     model = Model(type="main", engine=engine, model=model)
     rails_config.models = [model]
-    rails_config.rails = Rails(input=InputRails(
-        flows=["input check blocked terms"])
+    rails_config.rails = Rails(
+        input=InputRails(flows=["input check blocked terms"])
     )
 
     rails = LLMRails(rails_config)

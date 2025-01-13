@@ -20,8 +20,9 @@ class Langsecure(BaseModel):
     tracking_server: Optional[Union[Path, HttpUrl]] = Path(
         "~/.langsecure/trace.log"
     ).expanduser()
-    rails_backend: Optional[Literal["nvidia-nemoguardrails"]] \
-        = "nvidia-nemoguardrails"
+    rails_backend: Optional[Literal["nvidia-nemoguardrails"]] = (
+        "nvidia-nemoguardrails"
+    )
     langsecure_server: Optional[HttpUrl] = None
     llm_engine: Optional[str] = "openai"
     llm_model: Optional[str] = "gpt-3.5-turbo-instruct"

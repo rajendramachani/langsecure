@@ -26,18 +26,21 @@ class StopComponent(QueryComponent):
 
     message: str = "Pipeline execution terminated."
 
-    def _validate_component_inputs(self, input: Dict[str, Any]) \
-            -> Dict[str, Any]:
+    def _validate_component_inputs(
+        self, input: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate component inputs during run_component."""
         raise NotImplementedError
 
-    def validate_component_inputs(self, input: Dict[str, Any]) \
-            -> Dict[str, Any]:
+    def validate_component_inputs(
+        self, input: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate component inputs."""
         return input
 
-    def _validate_component_outputs(self, output: Dict[str, Any]) \
-            -> Dict[str, Any]:
+    def _validate_component_outputs(
+        self, output: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate component outputs."""
         # make sure output value is a list
         if not isinstance(output["output"], str):
@@ -78,8 +81,9 @@ class LI_QueryPipeline(Langsecure):
             )
         }
 
-        self._parent.__class__.get_next_module_keys \
-            = self._get_next_module_keys
+        self._parent.__class__.get_next_module_keys = (
+            self._get_next_module_keys
+        )
         return self._parent
 
     def _get_next_module_keys(self, run_state):
@@ -105,13 +109,13 @@ class LI_QueryPipeline(Langsecure):
                                 )
                                 # Execute a stop stage and
                                 # return back to the caller
-                                run_state.all_module_inputs["stop_component"]\
-                                    = \
-                                    {
-                                    "message": deny_message
-                                }
-                                if ("stop_component" not in
-                                        run_state.module_dict.keys()):
+                                run_state.all_module_inputs[
+                                    "stop_component"
+                                ] = {"message": deny_message}
+                                if (
+                                    "stop_component"
+                                    not in run_state.module_dict.keys()
+                                ):
                                     self._parent.add(
                                         "stop_component", stop_component
                                     )

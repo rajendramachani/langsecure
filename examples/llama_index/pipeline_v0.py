@@ -145,8 +145,10 @@ def get_next_module_keys(self, run_state):
                         run_state.all_module_inputs["message_component"] = {
                             "message": denied_message
                         }
-                        if ("message_component" not in
-                                run_state.module_dict.keys()):
+                        if (
+                            "message_component"
+                            not in run_state.module_dict.keys()
+                        ):
                             mcmp = MessageComponent(message=denied_message)
                             self.add("message_component", mcmp)
                             # Do not execute any further stages

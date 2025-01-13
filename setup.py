@@ -12,7 +12,7 @@ setup(
     description="security overlay for the lang resources.",
     author="ahmed",
     long_description=long_description,
-    long_description_content_type="text/markdown",    
+    long_description_content_type="text/markdown",
     author_email="ahmed@dkube.io",
     url="https://github.com/mahmedk/langsecure.git",
     packages=find_packages(),
