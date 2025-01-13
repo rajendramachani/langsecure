@@ -4,13 +4,8 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
-
-# from langchain_ollama.llms import OllamaLLM
-# from langchain_ollama import OllamaEmbeddings
 from langchain import hub
-
 from langchain_openai import ChatOpenAI
-
 from langsecure import Langsecure
 from langsecure.langchain import RunnableLangsecure
 

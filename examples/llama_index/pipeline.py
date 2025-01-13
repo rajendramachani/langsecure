@@ -1,26 +1,24 @@
+# pip install llama-index-core
+# pip install llama-index-llms-openai
+# pip install llama-index-embeddings-openai
+# pip install llama-index-readers-web
+
 from llama_index.core.response_synthesizers import TreeSummarize
 from llama_index.core.query_pipeline import InputComponent, QueryPipeline
-
-# from llama_index.llms.openai import OpenAI
-
 from langsecure import Langsecure
-
-
 from llama_index.core import (
     VectorStoreIndex,
     SimpleDirectoryReader,
 )
 
-# from pydantic import HttpUrl
 from pathlib import Path
+
 
 reader = SimpleDirectoryReader("../data")
 docs = reader.load_data()
 # print(docs[0].get_content())
 
-
 index = VectorStoreIndex.from_documents(docs)
-
 
 retriever = index.as_retriever(similarity_top_k=5)
 summarizer = TreeSummarize()

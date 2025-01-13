@@ -110,8 +110,6 @@ class Langsecure(BaseModel):
         else:
             from flask import Flask
 
-            # from flask import request, jsonify
-
             app = Flask("langsecure")
 
             utils.apiroute(app, self._enforcer, instance=self)

@@ -1,22 +1,7 @@
-# import langsecure
-
-# pip install llama-index-core
-# pip install llama-index-llms-openai
-# pip install llama-index-embeddings-openai
-# pip install llama-index-readers-web
-
-# from llama_index.core import (
-#     VectorStoreIndex,
-#     ServiceContext,
-#     SimpleDirectoryReader,
-#     load_index_from_storage,
-# )
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 
 from llama_index.core.response_synthesizers import TreeSummarize
 from llama_index.core.query_pipeline import InputComponent, QueryPipeline
-
-# from llama_index.llms.openai import OpenAI
 
 from pydantic import BaseModel, HttpUrl
 from pathlib import Path
@@ -27,16 +12,11 @@ import inspect
 """Arg pack components."""
 
 from typing import Any, Dict, Optional
-
-# from typing import Any, Callable, Dict, Optional
-
 from llama_index.core.base.query_pipeline.query import (
     InputKeys,
     OutputKeys,
     QueryComponent,
 )
-
-# from llama_index.core.bridge.pydantic import Field
 
 
 """
@@ -183,7 +163,7 @@ class LangSecure(BaseModel):
         try:
             if (
                 "llama_index.core.query_pipeline.query"
-                in runnable.__class__.__module__  # noqa: E501
+                in runnable.__class__.__module__
                 and "QueryPipeline" in runnable.__class__.__qualname__
             ):
                 return LI_QueryPipeline(policy_store=self.policy_store).shield(

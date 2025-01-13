@@ -1,16 +1,11 @@
 """Arg pack components."""
 
 from typing import Any, Dict
-
-# from typing import Callable, Optional
-
 from llama_index.core.base.query_pipeline.query import (
     InputKeys,
     OutputKeys,
     QueryComponent,
 )
-
-# from llama_index.core.bridge.pydantic import Field
 
 import inspect
 from langsecure.factory import implements

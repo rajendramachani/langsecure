@@ -1,5 +1,3 @@
-# import langsecure
-
 # pip install llama-index-core
 # pip install llama-index-llms-openai
 # pip install llama-index-embeddings-openai
@@ -29,19 +27,10 @@ chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True)
 response = chat_engine.chat(prompt)
 """
 
-
-# from llama_index.core import (
-#     VectorStoreIndex,
-#     ServiceContext,
-#     SimpleDirectoryReader,
-#     load_index_from_storage,
-# )
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
-
 from llama_index.core.response_synthesizers import TreeSummarize
 from llama_index.core.query_pipeline import InputComponent, QueryPipeline
 
-# from llama_index.llms.openai import OpenAI
 
 reader = SimpleDirectoryReader("../data")
 docs = reader.load_data()

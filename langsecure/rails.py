@@ -1,7 +1,6 @@
 from nemoguardrails import LLMRails
 from nemoguardrails.actions.llm.utils import llm_call
 
-# from nemoguardrails.llm.params import llm_params
 from nemoguardrails.llm.prompts import Task
 from nemoguardrails.llm.taskmanager import LLMTaskManager
 from nemoguardrails.rails.llm.config import RailsConfig
@@ -23,7 +22,6 @@ from taskflow.patterns import unordered_flow as uf
 from pydantic import BaseModel
 from typing import List, Callable
 
-# import json
 
 SELF_CHECK_INPUT_PROMPT_STR = """
       Your task is to check if the user message below complies with the
