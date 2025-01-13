@@ -1,0 +1,19 @@
+[tool.black]
+line-length = 79  # Maximum line length (default: 88)
+target-version = ["py38", "py39", "py310"]  # Specify supported Python versions
+skip-string-normalization = false  # Keep original string quotes (false = normalize to double quotes)
+skip-magic-trailing-comma = false  # Do not skip adding a trailing comma where appropriate
+include = '\.pyi?$'  # Regex for files to include
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''  # Regex for files/directories to exclude
