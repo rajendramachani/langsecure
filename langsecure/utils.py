@@ -13,13 +13,18 @@ def execute_remotely_if_needed(func):
         if server_url is not None:
             # Remote execution - make HTTP request to the remote server
             data = {"args": args, "kwargs": kwargs}
-            response = requests.post(f"{server_url}/{func.__name__}", json=data)
+            response = requests.post(
+                f"{server_url}/{func.__name__}",
+                json=data
+            )
 
             if response.status_code == 200:
-                return response.json()  # Return the result from the remote server
+                return response.json()
+                # Return the result from the remote server
             else:
                 raise Exception(
-                    f"Remote invocation failed with status:" f" {response.status_code}"
+                        f"Remote invocation failed with status: "
+                        f"{response.status_code}"
                 )
         else:
             # Local execution

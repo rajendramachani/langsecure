@@ -18,7 +18,8 @@ class Result(BaseModel):
         validate_assignment=True,
         frozen=True,
         json_encoders={
-            Any: lambda v: (json.dumps(v) if isinstance(v, (dict, list, tuple)) else v)
+            Any: lambda v: (json.dumps(v)
+                            if isinstance(v, (dict, list, tuple)) else v)
         },
     )
 
@@ -51,14 +52,20 @@ class PyFilter(BaseModel):
         validate_assignment=True,
         frozen=True,
         json_encoders={
-            Any: lambda v: (json.dumps(v) if isinstance(v, (dict, list, tuple)) else v)
+            Any: lambda v: (json.dumps(v)
+                            if isinstance(v, (dict, list, tuple)) else v)
         },
     )
 
     id: Union[FILTERS]
     rules: Union[str, Dict, List] = "default"
     action: ACTIONS = "log"
-    scope: List[Literal["user_input", "context", "bot_response", "all"]] = ["all"]
+    scope: List[Literal[
+        "user_input",
+        "context",
+        "bot_response",
+        "all"
+    ]] = ["all"]
 
 
 class PySubjects(BaseModel):
@@ -67,7 +74,8 @@ class PySubjects(BaseModel):
         validate_assignment=True,
         frozen=False,
         json_encoders={
-            Any: lambda v: (json.dumps(v) if isinstance(v, (dict, list, tuple)) else v)
+            Any: lambda v: (json.dumps(v)
+                            if isinstance(v, (dict, list, tuple)) else v)
         },
     )
 
@@ -87,7 +95,8 @@ class PyPolicy(BaseModel):
         validate_assignment=True,
         frozen=True,
         json_encoders={
-            Any: lambda v: (json.dumps(v) if isinstance(v, (dict, list, tuple)) else v)
+            Any: lambda v: (json.dumps(v)
+                            if isinstance(v, (dict, list, tuple)) else v)
         },
     )
 

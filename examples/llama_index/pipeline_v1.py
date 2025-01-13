@@ -101,7 +101,8 @@ def get_next_module_keys(self, run_state):
                         run_state.all_module_inputs["message_component"] = {
                             "message": denied_message
                         }
-                        if "message_component" not in run_state.module_dict.keys():
+                        key = "message_component"
+                        if key not in run_state.module_dict.keys():
                             mcmp = MessageComponent(message=denied_message)
                             self.add("message_component", mcmp)
                             # Do not execute any further stages
@@ -127,8 +128,13 @@ def process_component_output(self, output_dict, module_key, run_state):
         # query = "what is the purpose of positional encoding
         # in the Transformer architecture?"
         query = "what is the color of red apple?"
-        allow, denied_message = output_guardrails(query, context, answer)  # noqa: F821
-        print(f"Apply output guardrail here >> {output_dict['output'].response}")
+        allow, denied_message = output_guardrails(  # noqa: F821
+            query, context, answer
+        )
+        print(
+            f"Apply output guardrail here >> "
+            f"{output_dict['output'].response}"
+        )
         if allow is False:
             output_dict["output"].response = denied_message
 
@@ -149,7 +155,8 @@ class LangSecure(BaseModel):
 
     policy_store: Optional[Union[Path, HttpUrl]] = None
     tracking_server: Optional[Union[Path, HttpUrl]] = None
-    rails_backend: Optional[Literal["nvidia-nemoguardrails"]] = "nvidia-nemoguardrails"
+    val = "nvidia-nemoguardrails"
+    rails_backend: Optional[Literal[val]] = val
 
     def __init__(self, **params):
         super().__init__(**params)
@@ -175,10 +182,13 @@ class LangSecure(BaseModel):
     def shield(self, runnable: Any):
         try:
             if (
-                "llama_index.core.query_pipeline.query" in runnable.__class__.__module__
+                "llama_index.core.query_pipeline.query"
+                in runnable.__class__.__module__  # noqa: E501
                 and "QueryPipeline" in runnable.__class__.__qualname__
             ):
-                return LI_QueryPipeline(policy_store=self.policy_store).shield(runnable)
+                return LI_QueryPipeline(policy_store=self.policy_store).shield(
+                    runnable
+                )
             else:
                 return runnable
         except Exception as e:
@@ -198,15 +208,21 @@ class StopComponent(QueryComponent):
 
     message: str = "Pipeline execution terminated."
 
-    def _validate_component_inputs(self, input: Dict[str, Any]) -> Dict[str, Any]:
+    def _validate_component_inputs_run_component(
+        self, input: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate component inputs during run_component."""
         raise NotImplementedError
 
-    def validate_component_inputs(self, input: Dict[str, Any]) -> Dict[str, Any]:
+    def _validate_component_inputs(
+        self, input: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate component inputs."""
         return input
 
-    def _validate_component_outputs(self, output: Dict[str, Any]) -> Dict[str, Any]:
+    def _validate_component_outputs(
+        self, input: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate component outputs."""
         # make sure output value is a list
         if not isinstance(output["output"], str):
@@ -242,10 +258,14 @@ class LI_QueryPipeline(LangSecure):
         self._parent = runnable
         self._parent_callables = {
             name: func
-            for name, func in inspect.getmembers(runnable, predicate=inspect.ismethod)
+            for name, func in inspect.getmembers(
+                runnable, predicate=inspect.ismethod
+            )
         }
 
-        self._parent.__class__.get_next_module_keys = self._get_next_module_keys
+        self._parent.__class__.get_next_module_keys = (
+            self._get_next_module_keys
+        )
         return self._parent
 
     def _get_next_module_keys(self, run_state):
@@ -263,16 +283,25 @@ class LI_QueryPipeline(LangSecure):
                     module_input,
                 ) in run_state.all_module_inputs.items():
                     if module_key == stage:
-                        deny, deny_message = self._input_rails(module_input["input"])
+                        deny, deny_message = self._input_rails(
+                            module_input["input"]
+                        )
                         if deny is True:
-                            stop_component = StopComponent(message=deny_message)
+                            stop_component = StopComponent(
+                                message=deny_message
+                            )
                             # Execute a stop stage and
                             # return back to the caller
                             run_state.all_module_inputs["stop_component"] = {
                                 "message": deny_message
                             }
-                            if "stop_component" not in run_state.module_dict.keys():
-                                self._parent.add("stop_component", stop_component)
+                            if (
+                                "stop_component"
+                                not in run_state.module_dict.keys()
+                            ):
+                                self._parent.add(
+                                    "stop_component", stop_component
+                                )
                             return ["stop_component"]
             if stage == "stop_component":
                 # post stop component, just return empty list

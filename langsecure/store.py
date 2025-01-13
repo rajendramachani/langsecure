@@ -35,7 +35,8 @@ class PyPolicyStore(BaseModel):
             # load from the given URL
             # URLs can be git or any cloud bucket URLs
             raise NotImplementedError(
-                "support for loading policies from a" "remote store is not implemented."
+                "support for loading policies from a" "remote "
+                "store is not implemented."
             )
 
     def _load_frompkg(self, package):

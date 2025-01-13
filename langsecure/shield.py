@@ -20,7 +20,8 @@ class Langsecure(BaseModel):
     tracking_server: Optional[Union[Path, HttpUrl]] = Path(
         "~/.langsecure/trace.log"
     ).expanduser()
-    rails_backend: Optional[Literal["nvidia-nemoguardrails"]] = "nvidia-nemoguardrails"
+    rails_backend: Optional[Literal["nvidia-nemoguardrails"]] \
+        = "nvidia-nemoguardrails"
     langsecure_server: Optional[HttpUrl] = None
     llm_engine: Optional[str] = "openai"
     llm_model: Optional[str] = "gpt-3.5-turbo-instruct"
@@ -45,7 +46,8 @@ class Langsecure(BaseModel):
     def shield(self, runnable: Any):
         try:
             fqcn = (
-                f"{runnable.__class__.__module__}." f"{runnable.__class__.__qualname__}"
+                f"{runnable.__class__.__module__}."
+                f"{runnable.__class__.__qualname__}"
             )
             implementor = factory.get(fqcn)
             if implementor is not None:

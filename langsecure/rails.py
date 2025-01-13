@@ -157,7 +157,9 @@ def secure_input_general(
         task=Task.SELF_CHECK_INPUT, content=SELF_CHECK_INPUT_PROMPT_STR
     )
     model = Model(type="main", engine=engine, model=model)
-    rails_config = RailsConfig(models=[model], prompts=[self_check_input_prompt])
+    rails_config = RailsConfig(
+        models=[model], prompts=[self_check_input_prompt]
+    )
     rails = LLMRails(rails_config)
     llm = rails.llm
     llm_task_manager = LLMTaskManager(rails_config)
@@ -200,15 +202,21 @@ async def input_check_blocked_terms(context: Optional[dict] = None):
 
 @implements("proprietary_terms")
 def secure_input_proprietary_terms(
-    prompt, rules=None, engine="openai", model="gpt-3.5-turbo-instruct"
+        prompt, rules=None, engine="openai", model="gpt-3.5-turbo-instruct"
 ) -> Result:
-    rails_config = RailsConfig.from_content(colang_content=PROPRIETARY_TERMS_CO)
+    rails_config = RailsConfig.from_content(
+        colang_content=PROPRIETARY_TERMS_CO
+    )
     model = Model(type="main", engine=engine, model=model)
     rails_config.models = [model]
-    rails_config.rails = Rails(input=InputRails(flows=["input check blocked terms"]))
+    rails_config.rails = Rails(input=InputRails(
+        flows=["input check blocked terms"])
+    )
 
     rails = LLMRails(rails_config)
-    rails.register_action(input_check_blocked_terms, name="input_check_blocked_terms")
+    rails.register_action(
+        input_check_blocked_terms, name="input_check_blocked_terms"
+    )
     output = rails.generate(prompt, return_context=True)
 
     if output[1]["is_blocked"]:
@@ -229,7 +237,9 @@ def secure_input_proprietary_terms(
 def secure_input_disallowed_topics(
     prompt, rules=None, engine="openai", model="gpt-3.5-turbo-instruct"
 ) -> Result:
-    rails_config = RailsConfig.from_content(colang_content=DISALLOWED_TOPICS_CO)
+    rails_config = RailsConfig.from_content(
+        colang_content=DISALLOWED_TOPICS_CO
+    )
     model = Model(type="main", engine=engine, model=model)
     rails_config.models = [model]
 

@@ -173,8 +173,10 @@ def process_component_output(self, output_dict, module_key, run_state):
         # the Transformer architecture?"
         query = "what is the color of red apple?"
         allow, denied_message = output_guardrails(query, context, answer)
-        print(f"Apply output guardrail here >> {
-        output_dict['output'].response}")
+        print(
+            f"Apply output guardrail here >> "
+            f"{output_dict['output'].response}"
+        )
         if allow is False:
             output_dict["output"].response = denied_message
 
