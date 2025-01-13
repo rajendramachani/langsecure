@@ -10,7 +10,8 @@ from langfuse import Langfuse
 import json
 
 trace.set_tracer_provider(TracerProvider())
-processed_spans = {} # to avoid duplicate spans during export because of threading?
+processed_spans = {}  # to avoid duplicate spans during export because of threading?
+
 
 class FileSpanExporter(SpanExporter):
     def __init__(
@@ -34,7 +35,8 @@ class FileSpanExporter(SpanExporter):
                     continue
                 event = json.loads(span.to_json(indent=None))
                 self._file.write(
-                    f'{event["start_time"]} {event["name"]} {event["events"][0]["attributes"]["output"]}\n'
+                    f'{event["start_time"]} {event["name"]}'
+                    f'{event["events"][0]["attributes"]["output"]}\n'
                 )
                 processed_spans[span.context.span_id] = True
             self._file.flush()
