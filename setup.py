@@ -20,5 +20,5 @@ setup(
     package_data={"langsecure": ["policy_store/*"]},
     install_requires=required,
     python_requires=">=3.10",
-    extras_require={}
+    extras_require={},
 )
