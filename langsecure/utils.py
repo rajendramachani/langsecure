@@ -48,3 +48,23 @@ def apiroute(app, func, instance=None):
 
     # Register the wrapped function as a Flask route
     app.add_url_rule(f'/{func.__name__}', view_func=wrapped, methods=['POST'])
+
+
+def ls_input_rail(query_param_name="query"):
+
+    def decorator(func):
+        func._query_param_name = query_param_name
+        return func
+
+    return decorator
+
+
+def ls_context_rail(nodes_param_name="nodes"):
+
+    def decorator(func):
+        func._apply_context_rail = True
+        func._nodes_param_name = nodes_param_name
+        return func
+
+    return decorator
+

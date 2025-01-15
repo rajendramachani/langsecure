@@ -33,7 +33,7 @@ def draw_all_possible_flows(workflow):
 async def main(query=None):
     tracking_server = Path("./langsecure.log")
     
-    w = OpenAIGenerator(timeout=20)
+    w = OpenAIGenerator(timeout=30)
     w = Langsecure(policy_store="default", tracking_server=tracking_server).shield(w)
     # w = Langsecure(langsecure_server="http://127.0.0.1:8001").shield(w)
 
