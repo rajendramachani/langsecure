@@ -28,12 +28,20 @@ from llama_index import SimpleDirectoryReader
 
 reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
 docs = reader.load_data()
-service_context = ServiceContext.from_defaults(llm=OpenAI
-(model="gpt-3.5-turbo", temperature=0.5, system_prompt="You are an
-expert on the Streamlit Python library and your job is to answer
-technical questions. Assume that all questions are related to the
-Streamlit Python library. Keep your answers technical and based on
-facts – do not hallucinate features."))
+
+service_context = ServiceContext.from_defaults(
+    llm=OpenAI(
+        model="gpt-3.5-turbo",
+        temperature=0.5,
+        system_prompt=(
+            "You are an expert on the Streamlit Python library and your job is
+             to answer technical questions. ""Assume that all questions are
+             related to the Streamlit Python library. ""Keep your answers
+             technical and based on facts – do not hallucinate features."
+        )
+    )
+)
+
 index = VectorStoreIndex.from_documents(docs, service_context=service_context)
 
 chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True)
@@ -135,8 +143,9 @@ class LangSecure(BaseModel):
 
     policy_store: Optional[Union[Path, HttpUrl]] = None
     tracking_server: Optional[Union[Path, HttpUrl]] = None
-    val = "nvidia-nemoguardrails"
-    rails_backend: Optional[Literal[val]] = val
+    rails_backend: Optional[Literal["nvidia-nemoguardrails"]] = (
+        "nvidia-nemoguardrails"
+    )
 
     def __init__(self, **params):
         super().__init__(**params)
@@ -201,7 +210,7 @@ class StopComponent(QueryComponent):
         return input
 
     def _validate_component_outputs(
-        self, input: Dict[str, Any]
+        self, output: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Validate component outputs."""
         # make sure output value is a list

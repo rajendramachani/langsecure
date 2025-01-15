@@ -13,12 +13,18 @@ from llama_index import SimpleDirectoryReader
 reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
 docs = reader.load_data()
 
-service_context = ServiceContext.from_defaults(llm=OpenAI
-(model="gpt-3.5-turbo", temperature=0.5, system_prompt="You are an
-expert on the Streamlit Python library and your job is to answer
-technical questions. Assume that all questions are related to the
-Streamlit Python library. Keep your answers technical and based on
-facts – do not hallucinate features."))
+service_context = ServiceContext.from_defaults(
+    llm=OpenAI(
+        model="gpt-3.5-turbo",
+        temperature=0.5,
+        system_prompt=(
+            "You are an expert on the Streamlit Python library and your job is
+             to answer technical questions. ""Assume that all questions are
+             related to the Streamlit Python library. ""Keep your answers
+             technical and based on facts – do not hallucinate features."
+        )
+    )
+)
 
 index = VectorStoreIndex.from_documents(docs, service_context=service_context)
 
@@ -72,9 +78,7 @@ def input_guardrails(query) -> bool:
 
     info = rails.explain()
     tasks = info.dict()["llm_calls"]
-    import pdb
 
-    pdb.set_trace()
     for task in tasks:
         if task["task"] == "self_check_input":
             if "yes" in task["completion"].lower():
@@ -105,9 +109,7 @@ def output_guardrails(query, context, answer):
     )
 
     info = rails.explain()
-    import pdb
 
-    pdb.set_trace()
     tasks = info.dict()["llm_calls"]
     for task in tasks:
         if task["task"] == "content_safety_check_output":

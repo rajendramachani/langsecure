@@ -1,8 +1,3 @@
-# pip install llama-index-core
-# pip install llama-index-llms-openai
-# pip install llama-index-embeddings-openai
-# pip install llama-index-readers-web
-
 from llama_index.core.response_synthesizers import TreeSummarize
 from llama_index.core.query_pipeline import InputComponent, QueryPipeline
 from langsecure import Langsecure
